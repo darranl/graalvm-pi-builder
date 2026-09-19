@@ -4,9 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       graalvm_version:
-        description: "GraalVM CE version to build (e.g. 25.0.2)"
+        description: "GraalVM CE release/tag version (e.g. 25.3.4.1)"
         required: false
-        default: "25.0.2"
+        default: "25.3.4.1"
+      graalvm_jdk_version:
+        description: "GraalVM CE JDK/filename version (e.g. 25i3-25.0.4.1)"
+        required: false
+        default: "25i3-25.0.4.1"
 
 permissions:
   contents: read
@@ -42,10 +46,12 @@ jobs:
         id: tags
         run: |
           GRAALVM_VERSION="${{ github.event.inputs.graalvm_version }}"
+          GRAALVM_JDK_VERSION="${{ github.event.inputs.graalvm_jdk_version }}"
           MAJOR=$(echo "$GRAALVM_VERSION" | cut -d. -f1)
           DATE=$(date -u +%Y%m%d)
           IMAGE="${{ env.IMAGE }}"
           echo "graalvm_version=${GRAALVM_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "graalvm_jdk_version=${GRAALVM_JDK_VERSION}" >> "$GITHUB_OUTPUT"
           echo "tags=${IMAGE}:bookworm-graal${MAJOR},${IMAGE}:bookworm-${GRAALVM_VERSION},${IMAGE}:bookworm-${GRAALVM_VERSION}-${DATE}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push
@@ -58,3 +64,4 @@ jobs:
           tags: ${{ steps.tags.outputs.tags }}
           build-args: |
             GRAALVM_VERSION=${{ steps.tags.outputs.graalvm_version }}
+            GRAALVM_JDK_VERSION=${{ steps.tags.outputs.graalvm_jdk_version }}
