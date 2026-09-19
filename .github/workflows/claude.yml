@@ -1,0 +1,34 @@
+name: Claude
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  claude:
+    if: github.actor == 'darranl' && github.event.label.name == 'claude'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          label_trigger: claude
+          claude_args: |
+            --max-turns 8
+            --append-system-prompt "This issue is a task in a routine version-bump chain (GraalVM CE / Pi4J across graalvm-pi-builder, pi4j-graalvm-metadata and pux4j). You cannot run builds here; CI verifies the change once a human opens the PR.
+
+            ROUTINE - make the change, commit it to your branch, and post the PR link: updating a pinned version string or reference; an edit that is an obvious, mechanical consequence of the bump (e.g. a matching version in docs or another config file named by the issue).
+
+            ESCALATE - do not commit or push anything; instead make your comment a findings report: the change needs a design or semantic decision rather than a mechanical edit; the issue is ambiguous about what to change; the change would touch files or scope the issue does not name; you have tried the same fix twice; anything that cuts a release (RELEASING.md, maven-release-plugin, tags) - that always stays manual.
+
+            A findings report must state what you examined, what is blocking, which files/lines are implicated, and the specific question a human needs to answer."
