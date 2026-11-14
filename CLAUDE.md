@@ -5,9 +5,9 @@ workflow.
 
 ## Current versions
 
-Defined once in `graalvm.env` (`GRAALVM_VERSION`, `GRAALVM_JDK_VERSION`); a bump edits that file
-and nothing else. The `Containerfile` has no default versions, so build with `make`, which passes
-them as build args.
+Build versions are defined in `graalvm.env` (`GRAALVM_VERSION`, `GRAALVM_JDK_VERSION`); a bump
+updates that file and the current-version documentation in `README.md` and this file.
+The `Containerfile` has no default versions, so build with `make`, which passes them as build args.
 
 | Tool | Version |
 |---|---|
