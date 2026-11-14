@@ -1,7 +1,14 @@
 FROM --platform=linux/arm64 debian:bookworm
 
-ARG GRAALVM_VERSION=25.5.5.0.3
-ARG GRAALVM_JDK_VERSION=25i5-25.0.5.0.3
+# No defaults: the versions live in graalvm.env and are passed in as build args by the Makefile
+# and the publish workflow. Use `make build-dev` rather than a bare `podman build`.
+ARG GRAALVM_VERSION
+ARG GRAALVM_JDK_VERSION
+
+RUN if [ -z "${GRAALVM_VERSION}" ] || [ -z "${GRAALVM_JDK_VERSION}" ]; then \
+      echo "GRAALVM_VERSION and GRAALVM_JDK_VERSION build args are required; build with 'make build-dev' (see graalvm.env)" >&2; \
+      exit 1; \
+    fi
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget ca-certificates \
