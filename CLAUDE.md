@@ -7,7 +7,7 @@ workflow.
 
 | Tool | Version |
 |---|---|
-| GraalVM CE | 25.3.4.1 (JDK 25i3-25.0.4.1) |
+| GraalVM CE | 25.5.5.0.3 (JDK 25i5-25.0.5.0.3) |
 
 ## Build commands (quick reference)
 
@@ -21,8 +21,8 @@ make setup-podman   # install QEMU aarch64 binfmt (Arch Linux only)
 ## Publish workflow
 
 `.github/workflows/publish.yml` — `workflow_dispatch`, manual trigger via GitHub Actions UI.
-Accepts `graalvm_version` (release/tag version, default `25.3.4.1`) and `graalvm_jdk_version`
-(JDK/filename version, default `25i3-25.0.4.1`) inputs — GraalVM's release tag and download
+Accepts `graalvm_version` (release/tag version, default `25.5.5.0.3`) and `graalvm_jdk_version`
+(JDK/filename version, default `25i5-25.0.5.0.3`) inputs — GraalVM's release tag and download
 filename versions diverged starting with the 25i3 release line. Pushes three tags:
 `bookworm-graalN`, `bookworm-X.Y.Z`, `bookworm-X.Y.Z-YYYYMMDD`.
 

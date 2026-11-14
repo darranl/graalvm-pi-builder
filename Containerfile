@@ -1,7 +1,7 @@
 FROM --platform=linux/arm64 debian:bookworm
 
-ARG GRAALVM_VERSION=25.3.4.1
-ARG GRAALVM_JDK_VERSION=25i3-25.0.4.1
+ARG GRAALVM_VERSION=25.5.5.0.3
+ARG GRAALVM_JDK_VERSION=25i5-25.0.5.0.3
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget ca-certificates \
