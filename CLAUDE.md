@@ -5,6 +5,10 @@ workflow.
 
 ## Current versions
 
+Build versions are defined in `graalvm.env` (`GRAALVM_VERSION`, `GRAALVM_JDK_VERSION`); a bump
+updates that file and the current-version documentation in `README.md` and this file.
+The `Containerfile` has no default versions, so build with `make`, which passes them as build args.
+
 | Tool | Version |
 |---|---|
 | GraalVM CE | 25.5.5.0.3 (JDK 25i5-25.0.5.0.3) |
@@ -21,10 +25,15 @@ make setup-podman   # install QEMU aarch64 binfmt (Arch Linux only)
 ## Publish workflow
 
 `.github/workflows/publish.yml` — `workflow_dispatch`, manual trigger via GitHub Actions UI.
-Accepts `graalvm_version` (release/tag version, default `25.5.5.0.3`) and `graalvm_jdk_version`
-(JDK/filename version, default `25i5-25.0.5.0.3`) inputs — GraalVM's release tag and download
-filename versions diverged starting with the 25i3 release line. Pushes three tags:
+Reads the GraalVM versions from `graalvm.env` (the single source of truth, also included by the
+`Makefile`), so a version bump never edits this file. The
+optional `graalvm_version` (release/tag version) and `graalvm_jdk_version` (JDK/filename version)
+inputs override them for one run when non-empty — GraalVM's release tag and download filename
+versions diverged starting with the 25i3 release line. Pushes three tags:
 `bookworm-graalN`, `bookworm-X.Y.Z`, `bookworm-X.Y.Z-YYYYMMDD`.
+
+The Claude GitHub App cannot modify files under `.github/workflows`; keep version values out of
+workflow files so routine bumps stay within what the bot can edit.
 
 ## Future work
 

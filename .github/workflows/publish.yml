@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       graalvm_version:
-        description: "GraalVM CE release/tag version (e.g. 25.3.4.1)"
+        description: "GraalVM CE release/tag version override (leave empty to use graalvm.env)"
         required: false
-        default: "25.3.4.1"
+        default: ""
       graalvm_jdk_version:
-        description: "GraalVM CE JDK/filename version (e.g. 25i3-25.0.4.1)"
+        description: "GraalVM CE JDK/filename version override (leave empty to use graalvm.env)"
         required: false
-        default: "25i3-25.0.4.1"
+        default: ""
 
 permissions:
   contents: read
@@ -44,9 +44,21 @@ jobs:
 
       - name: Compute tags
         id: tags
+        env:
+          INPUT_GRAALVM_VERSION: ${{ github.event.inputs.graalvm_version }}
+          INPUT_GRAALVM_JDK_VERSION: ${{ github.event.inputs.graalvm_jdk_version }}
         run: |
-          GRAALVM_VERSION="${{ github.event.inputs.graalvm_version }}"
-          GRAALVM_JDK_VERSION="${{ github.event.inputs.graalvm_jdk_version }}"
+          set -euo pipefail
+          # graalvm.env is the single source of truth; an explicit workflow input
+          # overrides it.
+          . ./graalvm.env
+          GRAALVM_VERSION="${INPUT_GRAALVM_VERSION:-${GRAALVM_VERSION:-}}"
+          GRAALVM_JDK_VERSION="${INPUT_GRAALVM_JDK_VERSION:-${GRAALVM_JDK_VERSION:-}}"
+          if [ -z "$GRAALVM_VERSION" ] || [ -z "$GRAALVM_JDK_VERSION" ]; then
+            echo "::error::Could not determine GraalVM versions (version='${GRAALVM_VERSION}', jdk='${GRAALVM_JDK_VERSION}')"
+            exit 1
+          fi
+          echo "Building GraalVM ${GRAALVM_VERSION} (JDK ${GRAALVM_JDK_VERSION})"
           MAJOR=$(echo "$GRAALVM_VERSION" | cut -d. -f1)
           DATE=$(date -u +%Y%m%d)
           IMAGE="${{ env.IMAGE }}"

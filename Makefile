@@ -1,9 +1,14 @@
+# GRAALVM_VERSION and GRAALVM_JDK_VERSION come from graalvm.env (the single source of truth)
+include graalvm.env
+
 IMAGE     = ghcr.io/lofthouse-dev/graalvm-pi-builder
-GRAALVM   = 25.5.5.0.3
-MUTABLE   = bookworm-graal25
-IMMUTABLE = bookworm-$(GRAALVM)
-SNAPSHOT  = bookworm-$(GRAALVM)-$(shell date +%Y%m%d%H%M)
+MAJOR     = $(firstword $(subst ., ,$(GRAALVM_VERSION)))
+MUTABLE   = bookworm-graal$(MAJOR)
+IMMUTABLE = bookworm-$(GRAALVM_VERSION)
+SNAPSHOT  = bookworm-$(GRAALVM_VERSION)-$(shell date +%Y%m%d%H%M)
 LOCAL     = latest
+BUILD_ARGS = --build-arg GRAALVM_VERSION=$(GRAALVM_VERSION) \
+             --build-arg GRAALVM_JDK_VERSION=$(GRAALVM_JDK_VERSION)
 
 .DEFAULT_GOAL := help
 
@@ -18,13 +23,13 @@ help:
 	@echo "  setup-podman   Install QEMU aarch64 binfmt support (Arch Linux)"
 
 build-dev:
-	podman build --platform linux/arm64 -t $(IMAGE):$(LOCAL) .
+	podman build --platform linux/arm64 $(BUILD_ARGS) -t $(IMAGE):$(LOCAL) .
 
 build:
-	podman build --platform linux/arm64 -t $(IMAGE):$(MUTABLE) .
+	podman build --platform linux/arm64 $(BUILD_ARGS) -t $(IMAGE):$(MUTABLE) .
 
 build-release:
-	podman build --platform linux/arm64 \
+	podman build --platform linux/arm64 $(BUILD_ARGS) \
 	  -t $(IMAGE):$(MUTABLE) \
 	  -t $(IMAGE):$(IMMUTABLE) \
 	  -t $(IMAGE):$(SNAPSHOT) \
