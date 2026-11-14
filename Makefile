@@ -1,5 +1,5 @@
 IMAGE     = ghcr.io/lofthouse-dev/graalvm-pi-builder
-GRAALVM   = 25.3.4.1
+GRAALVM   = 25.5.5.0.3
 MUTABLE   = bookworm-graal25
 IMMUTABLE = bookworm-$(GRAALVM)
 SNAPSHOT  = bookworm-$(GRAALVM)-$(shell date +%Y%m%d%H%M)

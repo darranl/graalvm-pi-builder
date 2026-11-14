@@ -25,8 +25,8 @@ bookworm and will change between builds as security patches land.
 | Tag | Type | Meaning |
 |---|---|---|
 | `bookworm-graal25` | Mutable | Latest build of GraalVM 25.x on Debian bookworm; updated on each publish |
-| `bookworm-25.3.4.1` | Rolling | GraalVM version pinned; apt packages reflect the latest bookworm at publish time |
-| `bookworm-25.3.4.1-YYYYMMDD` | Snapshot | Exact build date — use this tag when you need a fully reproducible reference |
+| `bookworm-25.5.5.0.3` | Rolling | GraalVM version pinned; apt packages reflect the latest bookworm at publish time |
+| `bookworm-25.5.5.0.3-YYYYMMDD` | Snapshot | Exact build date — use this tag when you need a fully reproducible reference |
 
 Use the mutable tag to track updates. Pin to a snapshot tag when you need reproducibility.
 
@@ -40,10 +40,10 @@ podman pull --platform linux/arm64 ghcr.io/lofthouse-dev/graalvm-pi-builder:book
 docker pull --platform linux/arm64 ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-graal25
 
 # Pinned to a specific GraalVM version
-podman pull --platform linux/arm64 ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-25.3.4.1
+podman pull --platform linux/arm64 ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-25.5.5.0.3
 
 # Reproducible snapshot
-podman pull --platform linux/arm64 ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-25.3.4.1-20260120
+podman pull --platform linux/arm64 ghcr.io/lofthouse-dev/graalvm-pi-builder:bookworm-25.5.5.0.3-20260120
 ```
 
 On native arm64 hosts (e.g. Raspberry Pi, Apple Silicon) the `--platform` flag is not needed.
@@ -111,8 +111,8 @@ When a new GraalVM CE release is available:
 
 1. Change `GRAALVM` in `Makefile`
 2. Change the `ARG GRAALVM_VERSION` and `ARG GRAALVM_JDK_VERSION` defaults in `Containerfile` —
-   note that since the 25i3 release line, GraalVM's release/tag version (e.g. `25.3.4.1`) and the
-   JDK version baked into the download filename (e.g. `25i3-25.0.4.1`) can differ; check the
+   note that since the 25i3 release line, GraalVM's release/tag version (e.g. `25.5.5.0.3`) and the
+   JDK version baked into the download filename (e.g. `25i5-25.0.5.0.3`) can differ; check the
    [release page](https://github.com/graalvm/graalvm-ce-builds/releases) for both values
 3. Change the `graalvm_version` and `graalvm_jdk_version` defaults in
    `.github/workflows/publish.yml`
